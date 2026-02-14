@@ -1,6 +1,6 @@
 import { WHITE } from 'constants-shared/colors';
 
-export const UI_BASE_SIZE = 150;
+export const UI_BASE_SIZE = 110;
 
 export const UI_BASE_FONT_SIZE = UI_BASE_SIZE * 0.3;
 
