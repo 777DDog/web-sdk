@@ -33,7 +33,7 @@
 	});
 </script>
 
-<div>
+<div class="hidden-render">
 	{@render props.children()}
 </div>
 
@@ -65,6 +65,15 @@
 </div>
 
 <style lang="scss">
+	.hidden-render {
+		position: absolute;
+		width: 0;
+		height: 0;
+		overflow: hidden;
+		pointer-events: none;
+		opacity: 0;
+	}
+
 	.pop-up-wrap {
 		font-family: 'proxima-nova', sans-serif;
 		touch-action: manipulation;
@@ -74,6 +83,7 @@
 		top: 0;
 		bottom: 0;
 		right: 0;
+		overflow: hidden;
 
 		display: flex !important;
 		justify-content: center;

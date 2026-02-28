@@ -41,5 +41,15 @@
 			justify-content: center;
 			max-width: 100%;
 		}
+
+		&.scrollY {
+			overflow-y: auto;
+			overscroll-behavior: contain;
+		}
+
+		&.scrollX {
+			overflow-x: auto;
+			overscroll-behavior: contain;
+		}
 	}
 </style>
