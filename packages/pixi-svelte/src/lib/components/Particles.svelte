@@ -35,7 +35,3 @@
 	}
 </script>
 
-{#if texture === PIXI.Texture.EMPTY}
-	{console.error(`Particle: key "${props.key}" is not found in the loadedAssets`)}
-	{console.log('loadedAssets', $state.snapshot(context.stateApp).loadedAssets)}
-{/if}

@@ -61,13 +61,6 @@
 	});
 </script>
 
-{#if !spineData}
-	{console.error(`Spine: key "${key}" is not found in loadedAssets`)}
-{/if}
-
-{#if !spineData || debug}
-	{console.log('loadedAssets', $state.snapshot(context.stateApp).loadedAssets)}
-{/if}
 
 {#key spineData}
 	<BaseSpineProvider {...baseSpineProps} {scale} {pivot} {spineData}>
