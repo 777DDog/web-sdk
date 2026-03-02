@@ -62,8 +62,8 @@ export const preloadFont = () =>
 	new Promise<void>((resolve) => {
 		try {
 			WebFont.load({
-				typekit: {
-					id: 'aba0ebl',
+				google: {
+					families: ['Source Sans 3:200,300,400,500,600,700,800,900'],
 				},
 				active: () => {
 					resolve();

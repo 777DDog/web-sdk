@@ -75,7 +75,7 @@
 	}
 
 	.pop-up-wrap {
-		font-family: 'proxima-nova', sans-serif;
+		font-family: 'Source Sans 3', sans-serif;
 		touch-action: manipulation;
 		color: white;
 		position: fixed;

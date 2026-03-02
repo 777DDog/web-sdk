@@ -35,19 +35,19 @@
 	const payoutMultiplier = $derived((stateBet.betToResume as any)?.payoutMultiplier ?? 0);
 
 	const infoStyle = {
-		fontFamily: 'proxima-nova',
+		fontFamily: 'Source Sans 3',
 		fontSize: 20,
 		fill: WHITE,
 	} as const;
 
 	const infoLabelStyle = {
-		fontFamily: 'proxima-nova',
+		fontFamily: 'Source Sans 3',
 		fontSize: 20,
 		fill: 0xaaaaaa,
 	} as const;
 
 	const replayButtonStyle = {
-		fontFamily: 'proxima-nova',
+		fontFamily: 'Source Sans 3',
 		fontSize: 32,
 		fill: WHITE,
 	} as const;
