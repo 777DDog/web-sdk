@@ -21,4 +21,9 @@ export const i18nDerived = {
 	soundOn: () => stateI18nDerived.translate('SOUND ON'),
 	soundOff: () => stateI18nDerived.translate('SOUND OFF'),
 	menuExit: () => stateI18nDerived.translate('EXIT'),
+	// replay mode
+	replayBaseBet: () => stateUrlDerived.social() ? 'Base Play' : 'Base Bet',
+	replayCostMultiplier: () => stateUrlDerived.social() ? 'Feature Multiplier' : 'Cost Multiplier',
+	replayPayoutMultiplier: () => stateUrlDerived.social() ? 'Final Multiplier' : 'Payout Multiplier',
+	replayButton: () => 'REPLAY',
 };

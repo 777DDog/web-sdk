@@ -117,6 +117,7 @@
 			mode: stateUrlDerived.mode(),
 			version: stateUrlDerived.version(),
 			event: stateUrlDerived.event(),
+			lang: stateUrlDerived.lang(),
 		});
 
 		if(data) {

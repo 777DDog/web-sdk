@@ -1,7 +1,7 @@
 import { fromPromise } from 'xstate';
 
 import { API_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
-import { stateBet, stateUrlDerived, stateModal } from 'state-shared';
+import { stateBet, stateUrlDerived, stateModal, stateUi } from 'state-shared';
 import { requestBet, requestEndRound } from 'rgs-requests';
 
 import type { BaseBet } from './types';
@@ -40,7 +40,10 @@ const handleRequestBet = async ({ onError }: { onError: () => void }) => {
 };
 
 const handleRequestEndRound = async () => {
-	if(stateUrlDerived.replay()) return;
+	if(stateUrlDerived.replay()) {
+		stateUi.replayCompleted = true;
+		return;
+	}
 
 	try {
 		const data = await requestEndRound({

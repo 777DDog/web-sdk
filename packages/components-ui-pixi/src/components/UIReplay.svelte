@@ -11,13 +11,15 @@
 	import ButtonMenu from './ButtonMenu.svelte';
 	import ButtonMenuClose from './ButtonMenuClose.svelte';
 	import ButtonSoundSwitch from './ButtonSoundSwitch.svelte';
-	import { stateUi } from 'state-shared';
-	import { BLACK } from 'constants-shared/colors';
+	import { stateUi, stateBet, stateBetDerived } from 'state-shared';
+	import { BLACK, WHITE } from 'constants-shared/colors';
 	import { MainContainer } from 'components-layout';
-	import { Container, Rectangle } from 'pixi-svelte';
+	import { Container, Rectangle, Text } from 'pixi-svelte';
 	import { getContext } from '../context';
 	import type { LayoutUiProps } from '../types';
 	import LabelFreeSpinCounter from './LabelFreeSpinCounter.svelte';
+	import { i18nDerived } from '../i18n/i18nDerived';
+	import { numberToCurrencyString } from 'utils-shared/amount';
 
 	type Props = {
 		gameName: LayoutUiProps['gameName'];
@@ -26,6 +28,33 @@
 
 	const props: Props = $props();
 	const context = getContext();
+
+	// Replay info derived values
+	const baseBetValue = $derived(numberToCurrencyString(stateBet.betAmount));
+	const costMultiplier = $derived(stateBetDerived.activeBetMode()?.costMultiplier ?? 1);
+	const payoutMultiplier = $derived((stateBet.betToResume as any)?.payoutMultiplier ?? 0);
+
+	const infoStyle = {
+		fontFamily: 'proxima-nova',
+		fontSize: 20,
+		fill: WHITE,
+	} as const;
+
+	const infoLabelStyle = {
+		fontFamily: 'proxima-nova',
+		fontSize: 20,
+		fill: 0xaaaaaa,
+	} as const;
+
+	const replayButtonStyle = {
+		fontFamily: 'proxima-nova',
+		fontSize: 32,
+		fill: WHITE,
+	} as const;
+
+	const onReplay = () => {
+		window.location.reload();
+	};
 </script>
 
 <EnableSpaceHold />
@@ -39,10 +68,44 @@
 		{@render props.logo()}
 	</Container>
 
+	<!-- Replay Info: Base Bet / Cost Multiplier / Payout Multiplier -->
+	<MainContainer standard>
+		<Container x={20} y={80}>
+			<Text anchor={{ x: 0, y: 0 }} text={i18nDerived.replayBaseBet()} style={infoLabelStyle} />
+			<Text anchor={{ x: 0, y: 0 }} text={baseBetValue} style={infoStyle} x={220} />
+
+			<Text anchor={{ x: 0, y: 0 }} text={i18nDerived.replayCostMultiplier()} style={infoLabelStyle} y={30} />
+			<Text anchor={{ x: 0, y: 0 }} text={`${costMultiplier}×`} style={infoStyle} x={220} y={30} />
+
+			<Text anchor={{ x: 0, y: 0 }} text={i18nDerived.replayPayoutMultiplier()} style={infoLabelStyle} y={60} />
+			<Text anchor={{ x: 0, y: 0 }} text={`${payoutMultiplier}×`} style={infoStyle} x={220} y={60} />
+		</Container>
+	</MainContainer>
+
 	<MainContainer standard alignVertical="bottom">
 		{#if stateUi.freeSpinCounterShow && ['portrait', 'tablet'].includes(context.stateLayoutDerived.layoutType())}
 			<Container x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5} y={120}>
 				<LabelFreeSpinCounter stacked />
+			</Container>
+		{/if}
+
+		<!-- Replay Button (appears when replay completes) -->
+		{#if stateUi.replayCompleted}
+			<Container
+				x={context.stateLayoutDerived.mainLayoutStandard().width * 0.5}
+				y={context.stateLayoutDerived.mainLayoutStandard().height * 0.5 - 50}
+				eventMode="static"
+				cursor="pointer"
+				onpointerup={onReplay}
+			>
+				<Rectangle
+					anchor={0.5}
+					backgroundColor={0x2563eb}
+					width={240}
+					height={70}
+					borderRadius={12}
+				/>
+				<Text anchor={0.5} text={i18nDerived.replayButton()} style={replayButtonStyle} />
 			</Container>
 		{/if}
 
