@@ -1,6 +1,11 @@
 import { i18n, type Messages } from '@lingui/core';
 import { type Language } from './stateUrl.svelte';
 
+// Set message compiler to suppress "Uncompiled message detected" warnings.
+// Our catalogs use plain strings (no ICU), so an identity compiler suffices.
+// @ts-ignore — _messageCompiler is internal but stable API
+i18n._messageCompiler = (message: string) => message;
+
 export const stateI18n = $state({
 	i18n
 });
