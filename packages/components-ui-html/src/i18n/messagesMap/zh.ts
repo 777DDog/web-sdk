@@ -1,3 +1,23 @@
 export default {
+	BET: '投注',
+	MAX: '最大',
+	'BET MENU': '投注菜单',
+	'SELECT YOUR BET': '选择投注',
+	CONFIRM: '确认',
 	'MASTER VOLUME': '主音量',
+	'MUSIC VOLUME': '音乐音量',
+	'SOUND EFFECT VOLUME': '音效音量',
+	'AUTO SPINS': '自动旋转',
+	'NUMBER OF ROUNDS': '旋转次数',
+	ADVANCED: '高级',
+	'SINGLE WIN LIMIT': '单次赢利上限',
+	'LOSS LIMIT': '损失上限',
+	'START AUTOPLAY': '开始自动',
+	NOTIFICATION: '通知',
+	'AUTO PLAY HAS STOPPED DUE TO': '自动游戏已停止，原因：',
+	'INSUFFICIENT FUNDS TO PLACE THIS BET. PLEASE ADD FUNDS TO YOUR ACCOUNT OR LOWER THE BET LEVEL.':
+		'余额不足，请充值或降低投注金额。',
+	'LOSS LIMIT REACHED': '已达损失上限',
+	'SINGLE WIN LIMIT REACHED': '已达单次赢利上限',
+	SETTINGS: '设置',
 };
