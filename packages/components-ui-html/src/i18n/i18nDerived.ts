@@ -1,10 +1,10 @@
 import { stateI18nDerived, stateUrlDerived } from 'state-shared';
 
 export const i18nDerived = {
-	bet: () => (stateUrlDerived.social() ? '' : stateI18nDerived.translate('BET')),
+	bet: () => (stateUrlDerived.social() ? '' : ''),
 	max: () => stateI18nDerived.translate('MAX'),
-	betMenu: () => (stateUrlDerived.social() ? '' : stateI18nDerived.translate('BET MENU')),
-	selectYourBet: () => (stateUrlDerived.social() ? '' : stateI18nDerived.translate('SELECT YOUR BET')),
+	betMenu: () => (stateUrlDerived.social() ? '' : ''),
+	selectYourBet: () => (stateUrlDerived.social() ? '' : stateI18nDerived.translate('SELECT')),
 	confirm: () => stateI18nDerived.translate('CONFIRM'),
 	masterVolume: () => stateI18nDerived.translate('MASTER VOLUME'),
 	musicVolume: () => stateI18nDerived.translate('MUSIC VOLUME'),
