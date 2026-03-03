@@ -29,10 +29,32 @@
 	const props: Props = $props();
 	const context = getContext();
 
+	// Capture payoutMultiplier before state machine clears betToResume
+	let capturedPayoutMultiplier = $state(0);
+	$effect(() => {
+		const pm = (stateBet.betToResume as any)?.payoutMultiplier;
+		if (pm !== undefined && pm !== null) {
+			capturedPayoutMultiplier = pm;
+		}
+	});
+
 	// Replay info derived values
 	const baseBetValue = $derived(numberToCurrencyString(stateBet.betAmount));
 	const costMultiplier = $derived(stateBetDerived.activeBetMode()?.costMultiplier ?? 1);
-	const payoutMultiplier = $derived((stateBet.betToResume as any)?.payoutMultiplier ?? 0);
+	const totalBetCost = $derived(numberToCurrencyString(stateBet.betAmount * costMultiplier));
+	const totalWin = $derived(numberToCurrencyString(stateBet.betAmount * capturedPayoutMultiplier));
+	const modeDisplay = $derived(stateBet.activeBetModeKey.toUpperCase());
+
+	// Canvas dimensions
+	const cw = $derived(context.stateLayoutDerived.canvasSizes().width);
+	const ch = $derived(context.stateLayoutDerived.canvasSizes().height);
+
+	// Styles
+	const infoLabelStyle = {
+		fontFamily: 'Source Sans 3',
+		fontSize: 20,
+		fill: 0xaaaaaa,
+	} as const;
 
 	const infoStyle = {
 		fontFamily: 'Source Sans 3',
@@ -40,10 +62,32 @@
 		fill: WHITE,
 	} as const;
 
-	const infoLabelStyle = {
+	const infoHighlightStyle = {
 		fontFamily: 'Source Sans 3',
-		fontSize: 20,
-		fill: 0xaaaaaa,
+		fontSize: 22,
+		fill: 0x22c55e,
+		fontWeight: '600',
+	} as const;
+
+	const badgeStyle = {
+		fontFamily: 'Source Sans 3',
+		fontSize: 16,
+		fill: WHITE,
+		fontWeight: '700',
+	} as const;
+
+	const titleStyle = {
+		fontFamily: 'Source Sans 3',
+		fontSize: 28,
+		fill: WHITE,
+		fontWeight: '600',
+	} as const;
+
+	const startButtonStyle = {
+		fontFamily: 'Source Sans 3',
+		fontSize: 26,
+		fill: BLACK,
+		fontWeight: '600',
 	} as const;
 
 	const replayButtonStyle = {
@@ -51,6 +95,17 @@
 		fontSize: 32,
 		fill: WHITE,
 	} as const;
+
+	const disclaimerStyle = {
+		fontFamily: 'Source Sans 3',
+		fontSize: 13,
+		fill: 0x888888,
+	} as const;
+
+	const onStartReplay = () => {
+		stateUi.replayStarted = true;
+		context.eventEmitter.broadcast({ type: 'resumeBet' });
+	};
 
 	const onReplay = () => {
 		window.location.reload();
@@ -68,19 +123,21 @@
 		{@render props.logo()}
 	</Container>
 
-	<!-- Replay Info: Base Bet / Cost Multiplier / Payout Multiplier -->
-	<MainContainer standard>
-		<Container x={20} y={80}>
-			<Text anchor={{ x: 0, y: 0 }} text={i18nDerived.replayBaseBet()} style={infoLabelStyle} />
-			<Text anchor={{ x: 0, y: 0 }} text={baseBetValue} style={infoStyle} x={220} />
+	<!-- Replay Info: Base Bet / Cost Multiplier / Payout Multiplier (visible during playback) -->
+	{#if stateUi.replayStarted}
+		<MainContainer standard>
+			<Container x={20} y={80}>
+				<Text anchor={{ x: 0, y: 0 }} text={i18nDerived.replayBaseBet()} style={infoLabelStyle} />
+				<Text anchor={{ x: 0, y: 0 }} text={baseBetValue} style={infoStyle} x={220} />
 
-			<Text anchor={{ x: 0, y: 0 }} text={i18nDerived.replayCostMultiplier()} style={infoLabelStyle} y={30} />
-			<Text anchor={{ x: 0, y: 0 }} text={`${costMultiplier}×`} style={infoStyle} x={220} y={30} />
+				<Text anchor={{ x: 0, y: 0 }} text={i18nDerived.replayCostMultiplier()} style={infoLabelStyle} y={30} />
+				<Text anchor={{ x: 0, y: 0 }} text={`${costMultiplier}×`} style={infoStyle} x={220} y={30} />
 
-			<Text anchor={{ x: 0, y: 0 }} text={i18nDerived.replayPayoutMultiplier()} style={infoLabelStyle} y={60} />
-			<Text anchor={{ x: 0, y: 0 }} text={`${payoutMultiplier}×`} style={infoStyle} x={220} y={60} />
-		</Container>
-	</MainContainer>
+				<Text anchor={{ x: 0, y: 0 }} text={i18nDerived.replayPayoutMultiplier()} style={infoLabelStyle} y={60} />
+				<Text anchor={{ x: 0, y: 0 }} text={`${capturedPayoutMultiplier}×`} style={infoStyle} x={220} y={60} />
+			</Container>
+		</MainContainer>
+	{/if}
 
 	<MainContainer standard alignVertical="bottom">
 		{#if stateUi.freeSpinCounterShow && ['portrait', 'tablet'].includes(context.stateLayoutDerived.layoutType())}
@@ -149,10 +206,10 @@
 			alpha={0.5}
 			anchor={0.5}
 			backgroundColor={BLACK}
-			width={context.stateLayoutDerived.canvasSizes().width}
-			height={context.stateLayoutDerived.canvasSizes().height}
-			x={context.stateLayoutDerived.canvasSizes().width * 0.5}
-			y={context.stateLayoutDerived.canvasSizes().height * 0.5}
+			width={cw}
+			height={ch}
+			x={cw * 0.5}
+			y={ch * 0.5}
 			onpointerup={() => (stateUi.menuOpen = false)}
 		/>
 
@@ -182,5 +239,68 @@
 				</Container>
 			</Container>
 		</MainContainer>
+	{/if}
+
+	<!-- Landing Screen Overlay (shown before replay starts) -->
+	{#if !stateUi.replayStarted}
+		<Rectangle
+			eventMode="static"
+			anchor={0.5}
+			backgroundColor={0x0f172a}
+			alpha={0.92}
+			width={cw}
+			height={ch}
+			x={cw * 0.5}
+			y={ch * 0.5}
+		/>
+
+		<Container x={cw * 0.5} y={ch * 0.5 - 40}>
+			<!-- REPLAY badge -->
+			<Rectangle anchor={0.5} backgroundColor={0x2563eb} width={120} height={32} borderRadius={16} y={-210} />
+			<Text anchor={0.5} text="REPLAY" style={badgeStyle} y={-210} />
+
+			<!-- Title -->
+			<Text anchor={0.5} text={i18nDerived.replayTitle()} style={titleStyle} y={-165} />
+
+			<!-- Info card background -->
+			<Rectangle anchor={0.5} backgroundColor={0x1e293b} width={360} height={230} borderRadius={12} y={-20} />
+
+			<!-- Info rows -->
+			<Text anchor={{ x: 0, y: 0.5 }} text={i18nDerived.replayMode()} style={infoLabelStyle} x={-155} y={-100} />
+			<Text anchor={{ x: 1, y: 0.5 }} text={modeDisplay} style={infoStyle} x={155} y={-100} />
+
+			<Text anchor={{ x: 0, y: 0.5 }} text={i18nDerived.replayBaseBet()} style={infoLabelStyle} x={-155} y={-65} />
+			<Text anchor={{ x: 1, y: 0.5 }} text={baseBetValue} style={infoStyle} x={155} y={-65} />
+
+			<Text anchor={{ x: 0, y: 0.5 }} text={i18nDerived.replayCostMultiplier()} style={infoLabelStyle} x={-155} y={-30} />
+			<Text anchor={{ x: 1, y: 0.5 }} text={`${costMultiplier}x`} style={infoStyle} x={155} y={-30} />
+
+			<!-- Total Bet Cost (highlighted) -->
+			<Rectangle anchor={0.5} backgroundColor={0x334155} width={340} height={30} borderRadius={6} y={5} />
+			<Text anchor={{ x: 0, y: 0.5 }} text={i18nDerived.replayTotalBetCost()} style={infoLabelStyle} x={-155} y={5} />
+			<Text anchor={{ x: 1, y: 0.5 }} text={totalBetCost} style={infoHighlightStyle} x={155} y={5} />
+
+			<Text anchor={{ x: 0, y: 0.5 }} text={i18nDerived.replayPayoutMultiplier()} style={infoLabelStyle} x={-155} y={40} />
+			<Text anchor={{ x: 1, y: 0.5 }} text={`${capturedPayoutMultiplier}x`} style={infoStyle} x={155} y={40} />
+
+			<!-- Total Win (highlighted) -->
+			<Rectangle anchor={0.5} backgroundColor={0x334155} width={340} height={30} borderRadius={6} y={75} />
+			<Text anchor={{ x: 0, y: 0.5 }} text={i18nDerived.replayTotalWin()} style={infoLabelStyle} x={-155} y={75} />
+			<Text anchor={{ x: 1, y: 0.5 }} text={totalWin} style={infoHighlightStyle} x={155} y={75} />
+
+			<!-- Start Replay button -->
+			<Container
+				y={140}
+				eventMode="static"
+				cursor="pointer"
+				onpointerup={onStartReplay}
+			>
+				<Rectangle anchor={0.5} backgroundColor={0xeab308} width={300} height={56} borderRadius={12} />
+				<Text anchor={0.5} text={i18nDerived.replayStartButton()} style={startButtonStyle} />
+			</Container>
+
+			<!-- Disclaimer -->
+			<Text anchor={0.5} text={i18nDerived.replayDisclaimer()} style={disclaimerStyle} y={200} />
+		</Container>
 	{/if}
 </UiFadeContainer>

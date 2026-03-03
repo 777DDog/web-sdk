@@ -66,6 +66,7 @@ export const stateUi = $state({
 	drawerFold: false,
 	drawerButtonShow: false,
 	replayCompleted: false,
+	replayStarted: false,
 	config: {
 		mode: 'default' as UIConfigMode,
 	}

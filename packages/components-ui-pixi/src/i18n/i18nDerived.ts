@@ -26,4 +26,13 @@ export const i18nDerived = {
 	replayCostMultiplier: () => stateUrlDerived.social() ? 'Feature Multiplier' : 'Cost Multiplier',
 	replayPayoutMultiplier: () => stateUrlDerived.social() ? 'Final Multiplier' : 'Payout Multiplier',
 	replayButton: () => 'REPLAY',
+	// replay landing screen
+	replayTitle: () => stateUrlDerived.social() ? 'Play Replay' : 'Bet Replay',
+	replayMode: () => 'Mode',
+	replayTotalBetCost: () => stateUrlDerived.social() ? 'Total Play Cost' : 'Total Bet Cost',
+	replayTotalWin: () => 'Total Win',
+	replayStartButton: () => '\u25B6 Start Replay',
+	replayDisclaimer: () => stateUrlDerived.social()
+		? 'This is a replay of a previous play round. No plays will be placed.'
+		: 'This is a replay of a previous bet round. No bets will be placed.',
 };
