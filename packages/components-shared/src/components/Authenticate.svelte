@@ -13,52 +13,32 @@
 
 	const authenticate = async () => {
 		try {
+			console.log('[PATCH-A] authenticate() START');
 			const authenticateData = await requestAuthenticate({
 				rgsUrl: stateUrlDerived.rgsUrl(),
 				sessionID: stateUrlDerived.sessionID(),
 				language: stateUrlDerived.lang(),
 			});
+			console.log('[PATCH-A] authenticate() got response');
 
 			// error
 			if (authenticateData?.error) throw authenticateData;
 
 			// balance
 			if (authenticateData?.balance) {
-				// Example of authenticateData.balance
-				// {
-				// 		"amount": 10000000000000000,
-				// 		"currency": "USD"
-				// },
 				stateBet.currency = authenticateData.balance.currency;
 				stateBet.balanceAmount = authenticateData.balance.amount / API_AMOUNT_MULTIPLIER;
+				console.log('[PATCH-A] balance set:', stateBet.currency, stateBet.balanceAmount);
 			}
 
 			// config
 			if (authenticateData?.config) {
-				// Example of authenticateData.config
-				// {
-				// 	"gameID": "37_test-lines",
-				// 	"minBet": 100000,
-				// 	"maxBet": 1000000000,
-				// 	"stepBet": 10000,
-				// 	"defaultBetLevel": 1000000,
-				// 	"betLevels": [100000, 200000, ..., 1000000000],
-				// 	"betModes": {},
-				// 	"jurisdiction": {
-				// 			"socialCasino": false,
-				// 			"disabledFullscreen": false,
-				// 			"disabledTurbo": false,
-				// 			"disabledSuperTurbo": false,
-				// 			"disabledAutoplay": false,
-				// 			"disabledSlamstop": false,
-				// 			"disabledSpacebar": false,
-				// 			"disabledBuyFeature": false,
-				// 			"displayNetPosition": false,
-				// 			"displayRTP": false,
-				// 			"displaySessionTimer": false,
-				// 			"minimumRoundDuration": 0
-				// 	}
-				// }
+				console.log('[PATCH-B] config START');
+				console.log('[PATCH-B] RGS config:', JSON.stringify(authenticateData.config, null, 2));
+				console.log('[PATCH-B] betLevels (raw):', authenticateData.config?.betLevels);
+				console.log('[PATCH-B] defaultBetLevel (raw):', authenticateData.config?.defaultBetLevel);
+				console.log('[PATCH-B] currency:', authenticateData.balance?.currency);
+
 				stateConfig.jurisdiction = authenticateData?.config?.jurisdiction;
 				stateConfig.betAmountOptions = (authenticateData.config?.betLevels || []).map(
 					(level) => level / API_AMOUNT_MULTIPLIER,
@@ -66,21 +46,31 @@
 				stateConfig.betMenuOptions = stateConfig.betAmountOptions.filter((_, index) =>
 					MOST_USED_BET_INDEXES.includes(index),
 				);
+				console.log('[PATCH-B] betAmountOptions:', stateConfig.betAmountOptions);
+				console.log('[PATCH-B] betMenuOptions:', stateConfig.betMenuOptions);
+
+				// [PATCH-C] Apply defaultBetLevel from RGS config
+				console.log('[PATCH-C] defaultBetLevel logic START');
+				if (authenticateData.config?.defaultBetLevel) {
+					const defaultBet = authenticateData.config.defaultBetLevel / API_AMOUNT_MULTIPLIER;
+					console.log('[PATCH-C] defaultBet calculated:', defaultBet);
+					console.log('[PATCH-C] includes?', stateConfig.betAmountOptions.includes(defaultBet));
+					if (stateConfig.betAmountOptions.includes(defaultBet)) {
+						stateBet.betAmount = defaultBet;
+						console.log('[PATCH-C] betAmount SET to:', defaultBet);
+					}
+				} else {
+					console.log('[PATCH-C] no defaultBetLevel in config');
+				}
+				console.log('[PATCH-C] defaultBetLevel logic END');
+
+				console.log('[PATCH-B] config END');
 			}
 
 			// round
+			console.log('[PATCH-A] round check START');
 			if (authenticateData?.round) {
-				// Example of authenticateData.round 
-				// {
-				// 	"betID": 62277967,
-				// 	"amount": 1000000,
-				// 	"payout": 33400000,
-				// 	"payoutMultiplier": 33.4,
-				// 	"active": true,
-				// 	"state": [...],
-				// 	"mode": "BONUS",
-				// 	"event": null
-				// }
+				console.log('[PATCH-A] has round:', JSON.stringify(authenticateData.round));
 
 				if(authenticateData.round?.state) {
 					// @ts-ignore
@@ -99,9 +89,12 @@
 				if (authenticateData.round?.mode) {
 					stateBet.activeBetModeKey = authenticateData.round.mode;
 				};
+			} else {
+				console.log('[PATCH-A] no active round');
 			}
+			console.log('[PATCH-A] authenticate() END, betAmount:', stateBet.betAmount);
 		} catch (error) {
-			console.error(error);
+			console.error('[PATCH-A] authenticate() ERROR:', error);
 			stateModal.modal = { name: 'error', error };
 		}
 	};
@@ -132,6 +125,7 @@
 	};
 
 	onMount(async () => {
+		console.log('[PATCH-A] onMount START, replay?', stateUrlDerived.replay());
 		if(stateUrlDerived.replay()) {
 			stateUi.config.mode = 'replay';
 			await handleReplay();
@@ -141,6 +135,7 @@
 		};
 
 		authenticated = true;
+		console.log('[PATCH-A] onMount END, authenticated = true');
 	});
 </script>
 
