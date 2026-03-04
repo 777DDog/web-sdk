@@ -13,13 +13,13 @@
 
 	const authenticate = async () => {
 		try {
-			console.log('[PATCH-A] authenticate() START');
+			// console.log('[PATCH-A] authenticate() START');
 			const authenticateData = await requestAuthenticate({
 				rgsUrl: stateUrlDerived.rgsUrl(),
 				sessionID: stateUrlDerived.sessionID(),
 				language: stateUrlDerived.lang(),
 			});
-			console.log('[PATCH-A] authenticate() got response');
+			// console.log('[PATCH-A] authenticate() got response');
 
 			// error
 			if (authenticateData?.error) throw authenticateData;
@@ -28,16 +28,16 @@
 			if (authenticateData?.balance) {
 				stateBet.currency = authenticateData.balance.currency;
 				stateBet.balanceAmount = authenticateData.balance.amount / API_AMOUNT_MULTIPLIER;
-				console.log('[PATCH-A] balance set:', stateBet.currency, stateBet.balanceAmount);
+				// console.log('[PATCH-A] balance set:', stateBet.currency, stateBet.balanceAmount);
 			}
 
 			// config
 			if (authenticateData?.config) {
-				console.log('[PATCH-B] config START');
-				console.log('[PATCH-B] RGS config:', JSON.stringify(authenticateData.config, null, 2));
-				console.log('[PATCH-B] betLevels (raw):', authenticateData.config?.betLevels);
-				console.log('[PATCH-B] defaultBetLevel (raw):', authenticateData.config?.defaultBetLevel);
-				console.log('[PATCH-B] currency:', authenticateData.balance?.currency);
+				// console.log('[PATCH-B] config START');
+				// console.log('[PATCH-B] RGS config:', JSON.stringify(authenticateData.config, null, 2));
+				// console.log('[PATCH-B] betLevels (raw):', authenticateData.config?.betLevels);
+				// console.log('[PATCH-B] defaultBetLevel (raw):', authenticateData.config?.defaultBetLevel);
+				// console.log('[PATCH-B] currency:', authenticateData.balance?.currency);
 
 				stateConfig.jurisdiction = authenticateData?.config?.jurisdiction;
 				stateConfig.betAmountOptions = (authenticateData.config?.betLevels || []).map(
@@ -46,31 +46,31 @@
 				stateConfig.betMenuOptions = stateConfig.betAmountOptions.filter((_, index) =>
 					MOST_USED_BET_INDEXES.includes(index),
 				);
-				console.log('[PATCH-B] betAmountOptions:', stateConfig.betAmountOptions);
-				console.log('[PATCH-B] betMenuOptions:', stateConfig.betMenuOptions);
+				// console.log('[PATCH-B] betAmountOptions:', stateConfig.betAmountOptions);
+				// console.log('[PATCH-B] betMenuOptions:', stateConfig.betMenuOptions);
 
 				// [PATCH-C] Apply defaultBetLevel from RGS config
-				console.log('[PATCH-C] defaultBetLevel logic START');
+				// console.log('[PATCH-C] defaultBetLevel logic START');
 				if (authenticateData.config?.defaultBetLevel) {
 					const defaultBet = authenticateData.config.defaultBetLevel / API_AMOUNT_MULTIPLIER;
-					console.log('[PATCH-C] defaultBet calculated:', defaultBet);
-					console.log('[PATCH-C] includes?', stateConfig.betAmountOptions.includes(defaultBet));
+					// console.log('[PATCH-C] defaultBet calculated:', defaultBet);
+					// console.log('[PATCH-C] includes?', stateConfig.betAmountOptions.includes(defaultBet));
 					if (stateConfig.betAmountOptions.includes(defaultBet)) {
 						stateBet.betAmount = defaultBet;
-						console.log('[PATCH-C] betAmount SET to:', defaultBet);
+						// console.log('[PATCH-C] betAmount SET to:', defaultBet);
 					}
 				} else {
-					console.log('[PATCH-C] no defaultBetLevel in config');
+					// console.log('[PATCH-C] no defaultBetLevel in config');
 				}
-				console.log('[PATCH-C] defaultBetLevel logic END');
+				// console.log('[PATCH-C] defaultBetLevel logic END');
 
-				console.log('[PATCH-B] config END');
+				// console.log('[PATCH-B] config END');
 			}
 
 			// round
-			console.log('[PATCH-A] round check START');
+			// console.log('[PATCH-A] round check START');
 			if (authenticateData?.round) {
-				console.log('[PATCH-A] has round:', JSON.stringify(authenticateData.round));
+				// console.log('[PATCH-A] has round:', JSON.stringify(authenticateData.round));
 
 				if(authenticateData.round?.state) {
 					// @ts-ignore
@@ -90,44 +90,74 @@
 					stateBet.activeBetModeKey = authenticateData.round.mode;
 				};
 			} else {
-				console.log('[PATCH-A] no active round');
+				// console.log('[PATCH-A] no active round');
 			}
-			console.log('[PATCH-A] authenticate() END, betAmount:', stateBet.betAmount);
+			// console.log('[PATCH-A] authenticate() END, betAmount:', stateBet.betAmount);
 		} catch (error) {
-			console.error('[PATCH-A] authenticate() ERROR:', error);
+			// console.error('[PATCH-A] authenticate() ERROR:', error);
 			stateModal.modal = { name: 'error', error };
 		}
 	};
 
 	const handleReplay = async () => {
+		// console.log('[REPLAY] handleReplay START');
+		// console.log('[REPLAY] URL params:', {
+		// 	replay: stateUrlDerived.replay(),
+		// 	game: stateUrlDerived.game(),
+		// 	mode: stateUrlDerived.mode(),
+		// 	version: stateUrlDerived.version(),
+		// 	event: stateUrlDerived.event(),
+		// 	amount: stateUrlDerived.amount(),
+		// 	lang: stateUrlDerived.lang(),
+		// 	rgsUrl: stateUrlDerived.rgsUrl(),
+		// });
+
 		stateBet.betAmount = (stateUrlDerived.amount() / API_AMOUNT_MULTIPLIER) || 0;
 		stateBet.wageredBetAmount = (stateUrlDerived.amount() / API_AMOUNT_MULTIPLIER) || 0;
 		stateBet.activeBetModeKey = stateUrlDerived.mode();
+		// console.log('[REPLAY] betAmount:', stateBet.betAmount, 'mode:', stateBet.activeBetModeKey);
 
-		const data = await requestReplay({
-			rgsUrl: stateUrlDerived.rgsUrl(),
-			game: stateUrlDerived.game(),
-			mode: stateUrlDerived.mode(),
-			version: stateUrlDerived.version(),
-			event: stateUrlDerived.event(),
-			lang: stateUrlDerived.lang(),
-		});
-
-		if(data) {
-			// @ts-ignore
-			stateBet.betToResume = {
-				...data,
-				event: '0',
-				active: true,
+		try {
+			const data = await requestReplay({
+				rgsUrl: stateUrlDerived.rgsUrl(),
+				game: stateUrlDerived.game(),
 				mode: stateUrlDerived.mode(),
-			};
+				version: stateUrlDerived.version(),
+				event: stateUrlDerived.event(),
+				lang: stateUrlDerived.lang(),
+			});
+			// console.log('[REPLAY] RGS response:', JSON.stringify(data, null, 2));
+
+			if(data) {
+				// @ts-ignore
+				stateBet.betToResume = {
+					...data,
+					event: '0',
+					active: true,
+					mode: stateUrlDerived.mode(),
+				};
+				// console.log('[REPLAY] betToResume set:', {
+				// 	active: true,
+				// 	mode: stateUrlDerived.mode(),
+				// 	payoutMultiplier: (data as any)?.payoutMultiplier,
+				// 	stateLength: (data as any)?.state?.length,
+				// });
+			} else {
+				console.warn('[REPLAY] RGS returned no data');
+			}
+		} catch (error) {
+			console.error('[REPLAY] requestReplay ERROR:', error);
 		}
+
+		// console.log('[REPLAY] handleReplay END');
 	};
 
 	onMount(async () => {
-		console.log('[PATCH-A] onMount START, replay?', stateUrlDerived.replay());
+		// console.log('[REPLAY] onMount START, replay?', stateUrlDerived.replay());
+		// console.log('[REPLAY] stateUi.config.mode:', stateUi.config.mode);
 		if(stateUrlDerived.replay()) {
 			stateUi.config.mode = 'replay';
+			// console.log('[REPLAY] mode set to replay, calling handleReplay...');
 			await handleReplay();
 		} else {
 			stateUi.config.mode = 'default';
@@ -135,7 +165,14 @@
 		};
 
 		authenticated = true;
-		console.log('[PATCH-A] onMount END, authenticated = true');
+		// console.log('[REPLAY] onMount END, authenticated =', authenticated);
+		// console.log('[REPLAY] final state:', {
+		// 	'stateUi.config.mode': stateUi.config.mode,
+		// 	'stateUi.replayStarted': stateUi.replayStarted,
+		// 	'stateUi.replayCompleted': stateUi.replayCompleted,
+		// 	'betToResume.active': (stateBet.betToResume as any)?.active,
+		// 	'betAmount': stateBet.betAmount,
+		// });
 	});
 </script>
 

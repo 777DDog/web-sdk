@@ -33,14 +33,14 @@
 
 	// [PATCH-D] Debug log on mount
 	$effect(() => {
-		console.log('[PATCH-D] BetMenuAmountGrid derived:', {
-			count,
-			actualMax,
-			optionsLength: options.length,
-			options,
-			betAmountOptionsLength: stateConfig.betAmountOptions.length,
-			betMenuOptionsLength: stateConfig.betMenuOptions.length,
-		});
+		// console.log('[PATCH-D] BetMenuAmountGrid derived:', {
+		// 	count,
+		// 	actualMax,
+		// 	optionsLength: options.length,
+		// 	options,
+		// 	betAmountOptionsLength: stateConfig.betAmountOptions.length,
+		// 	betMenuOptionsLength: stateConfig.betMenuOptions.length,
+		// });
 	});
 </script>
 
