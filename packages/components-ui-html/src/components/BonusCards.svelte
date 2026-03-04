@@ -42,20 +42,23 @@
 			{/snippet}
 
 			{#snippet button()}
+				{@const insufficientBalance = stateBet.balanceAmount < stateBet.betAmount * betModeData.costMultiplier}
 				<Button
 					onclick={() => {
 						stateBonus.selectedBetModeKey = betModeData.mode;
 						eventEmitter.broadcast({ type: 'buyBonusConfirm' });
 						eventEmitter.broadcast({ type: 'soundPressGeneral' });
 					}}
-					disabled={stateBet.betAmount <= 0 ||
-						stateBet.balanceAmount < stateBet.betAmount * betModeData.costMultiplier}
+					disabled={stateBet.betAmount <= 0 || insufficientBalance}
 				>
 					<BaseIcon width="100%" height="2rem" border="2px solid white;" />
 					<BaseButtonContent>
 						<span style="font-size: 1rem;">{betModeData.text.button}</span>
 					</BaseButtonContent>
 				</Button>
+				{#if insufficientBalance}
+					<div class="insufficient-balance">INSUFFICIENT BALANCE</div>
+				{/if}
 			{/snippet}
 		</BonusCard>
 	{/if}
@@ -86,5 +89,13 @@
 		line-height: 1rem;
 		text-align: center;
 		white-space: nowrap;
+	}
+
+	.insufficient-balance {
+		font-size: 0.7rem;
+		text-align: center;
+		color: #ff4444;
+		font-weight: 600;
+		margin-top: 0.25rem;
 	}
 </style>

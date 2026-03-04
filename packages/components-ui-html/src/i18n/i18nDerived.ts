@@ -18,11 +18,9 @@ export const i18nDerived = {
 	notification: () => stateI18nDerived.translate('NOTIFICATION'),
 	autoSpinsStopInfo: () => stateI18nDerived.translate('AUTO PLAY HAS STOPPED DUE TO'),
 	insufficientFunds: () =>
-		stateUrlDerived.social()
-			? 'INSUFFICIENT FUNDS TO PLACE THIS PLAY. PLEASE ADD FUNDS TO YOUR ACCOUNT OR LOWER THE PLAY LEVEL.'
-			: stateI18nDerived.translate(
-					'INSUFFICIENT FUNDS TO PLACE THIS BET. PLEASE ADD FUNDS TO YOUR ACCOUNT OR LOWER THE BET LEVEL.',
-				),
+		stateI18nDerived.translate(
+			'INSUFFICIENT FUNDS TO PLACE THIS PLAY. PLEASE ADD FUNDS TO YOUR ACCOUNT OR LOWER THE PLAY LEVEL.',
+		),
 	lossLimitReached: () => stateI18nDerived.translate('LOSS LIMIT REACHED'),
 	singleWinLimitReached: () => stateI18nDerived.translate('SINGLE WIN LIMIT REACHED'),
 	settings: () => stateI18nDerived.translate('SETTINGS'),
