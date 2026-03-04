@@ -13,13 +13,13 @@
 
 	const authenticate = async () => {
 		try {
-			// console.log('[PATCH-A] authenticate() START');
+			console.log('[PATCH-A] authenticate() START');
 			const authenticateData = await requestAuthenticate({
 				rgsUrl: stateUrlDerived.rgsUrl(),
 				sessionID: stateUrlDerived.sessionID(),
 				language: stateUrlDerived.lang(),
 			});
-			// console.log('[PATCH-A] authenticate() got response');
+			console.log('[PATCH-A] authenticate() got response');
 
 			// error
 			if (authenticateData?.error) throw authenticateData;
@@ -28,16 +28,16 @@
 			if (authenticateData?.balance) {
 				stateBet.currency = authenticateData.balance.currency;
 				stateBet.balanceAmount = authenticateData.balance.amount / API_AMOUNT_MULTIPLIER;
-				// console.log('[PATCH-A] balance set:', stateBet.currency, stateBet.balanceAmount);
+				console.log('[PATCH-A] balance set:', stateBet.currency, stateBet.balanceAmount);
 			}
 
 			// config
 			if (authenticateData?.config) {
-				// console.log('[PATCH-B] config START');
-				// console.log('[PATCH-B] RGS config:', JSON.stringify(authenticateData.config, null, 2));
-				// console.log('[PATCH-B] betLevels (raw):', authenticateData.config?.betLevels);
-				// console.log('[PATCH-B] defaultBetLevel (raw):', authenticateData.config?.defaultBetLevel);
-				// console.log('[PATCH-B] currency:', authenticateData.balance?.currency);
+				console.log('[PATCH-B] config START');
+				console.log('[PATCH-B] RGS config:', JSON.stringify(authenticateData.config, null, 2));
+				console.log('[PATCH-B] betLevels (raw):', authenticateData.config?.betLevels);
+				console.log('[PATCH-B] defaultBetLevel (raw):', authenticateData.config?.defaultBetLevel);
+				console.log('[PATCH-B] currency:', authenticateData.balance?.currency);
 
 				stateConfig.jurisdiction = authenticateData?.config?.jurisdiction;
 				stateConfig.betAmountOptions = (authenticateData.config?.betLevels || []).map(
@@ -68,9 +68,10 @@
 			}
 
 			// round
-			// console.log('[PATCH-A] round check START');
+			console.log('[PATCH-A] round check START');
+			console.log('[PATCH-A] authenticateData:', JSON.stringify(authenticateData, null, 2));
 			if (authenticateData?.round) {
-				// console.log('[PATCH-A] has round:', JSON.stringify(authenticateData.round));
+				console.log('[PATCH-A] has round:', JSON.stringify(authenticateData.round));
 
 				if(authenticateData.round?.state) {
 					// @ts-ignore
@@ -111,6 +112,14 @@
 		// 	lang: stateUrlDerived.lang(),
 		// 	rgsUrl: stateUrlDerived.rgsUrl(),
 		// });
+
+		// Set currency from URL param; default to XGC for social mode, USD otherwise
+		const urlCurrency = stateUrlDerived.currency();
+		if (urlCurrency) {
+			stateBet.currency = urlCurrency;
+		} else if (stateUrlDerived.social()) {
+			stateBet.currency = 'XGC';
+		}
 
 		stateBet.betAmount = (stateUrlDerived.amount() / API_AMOUNT_MULTIPLIER) || 0;
 		stateBet.wageredBetAmount = (stateUrlDerived.amount() / API_AMOUNT_MULTIPLIER) || 0;
