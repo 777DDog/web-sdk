@@ -32,6 +32,7 @@
 	value={stateBet.betAmount}
 	{options}
 	onchange={(value) => (stateBet.betAmount = value)}
+	isDisabled={(value) => value > stateBet.balanceAmount}
 >
 	{#snippet option({ option })}
 		<BaseIcon

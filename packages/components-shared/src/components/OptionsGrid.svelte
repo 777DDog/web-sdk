@@ -8,6 +8,7 @@
 		options: Readonly<TValue[]>;
 		miniSize?: boolean;
 		onchange: (value: TValue) => void;
+		isDisabled?: (value: TValue) => boolean;
 		option: Snippet<[{ option: TValue; index: number }]>;
 	};
 
@@ -19,6 +20,7 @@
 		<div class="grid" class:miniSize={props.miniSize}>
 			{#each props.options as option, index (option)}
 				<Button
+					disabled={props.isDisabled?.(option) ?? false}
 					onclick={() => {
 						props.onchange(option);
 					}}
