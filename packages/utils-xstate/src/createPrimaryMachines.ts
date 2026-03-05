@@ -1,7 +1,7 @@
 import { fromPromise } from 'xstate';
 
 import { API_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
-import { stateBet, stateUrlDerived, stateModal, stateUi } from 'state-shared';
+import { stateBet, stateConfig, stateUrlDerived, stateModal, stateUi } from 'state-shared';
 import { requestBet, requestEndRound } from 'rgs-requests';
 
 import type { BaseBet } from './types';
@@ -195,6 +195,11 @@ function createPrimaryMachines<TBet extends BaseBet>(options: Options<TBet>) {
 			if (targetBet) {
 				const betType = getBetType({ bet: targetBet });
 				await BET_TYPE_METHODS_MAP[betType].endGame();
+			}
+
+			// Resume 完成後重設 bet 為 defaultBetLevel
+			if (input.rawBet) {
+				stateBet.betAmount = stateConfig.defaultBetAmount;
 			}
 		},
 	);

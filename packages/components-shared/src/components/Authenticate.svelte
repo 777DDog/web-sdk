@@ -53,11 +53,9 @@
 				// console.log('[PATCH-C] defaultBetLevel logic START');
 				if (authenticateData.config?.defaultBetLevel) {
 					const defaultBet = authenticateData.config.defaultBetLevel / API_AMOUNT_MULTIPLIER;
-					// console.log('[PATCH-C] defaultBet calculated:', defaultBet);
-					// console.log('[PATCH-C] includes?', stateConfig.betAmountOptions.includes(defaultBet));
 					if (stateConfig.betAmountOptions.includes(defaultBet)) {
 						stateBet.betAmount = defaultBet;
-						// console.log('[PATCH-C] betAmount SET to:', defaultBet);
+						stateConfig.defaultBetAmount = defaultBet;
 					}
 				} else {
 					// console.log('[PATCH-C] no defaultBetLevel in config');
