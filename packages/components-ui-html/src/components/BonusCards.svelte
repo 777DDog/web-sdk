@@ -85,10 +85,12 @@
 	}
 
 	.price {
-		font-size: 1rem;
-		line-height: 1rem;
+		font-size: 1.25rem;
+		line-height: 1.25rem;
 		text-align: center;
 		white-space: nowrap;
+		color: #ffd700;
+		font-weight: 700;
 	}
 
 	.insufficient-balance {
