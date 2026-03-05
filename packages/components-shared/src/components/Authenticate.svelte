@@ -91,6 +91,12 @@
 			} else {
 				// console.log('[PATCH-A] no active round');
 			}
+
+			// Safety: if no active round and bet exceeds balance, reset to default
+			if (!authenticateData?.round && stateBet.betAmount > stateBet.balanceAmount) {
+				stateBet.betAmount = stateConfig.defaultBetAmount;
+			}
+
 			// console.log('[PATCH-A] authenticate() END, betAmount:', stateBet.betAmount);
 		} catch (error) {
 			// console.error('[PATCH-A] authenticate() ERROR:', error);
