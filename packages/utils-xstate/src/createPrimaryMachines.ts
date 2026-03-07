@@ -197,9 +197,9 @@ function createPrimaryMachines<TBet extends BaseBet>(options: Options<TBet>) {
 				await BET_TYPE_METHODS_MAP[betType].endGame();
 			}
 
-			// Resume 完成後重設 bet 為 defaultBetLevel
+			// Resume 完成後恢復原本的下注金額
 			if (input.rawBet) {
-				stateBet.betAmount = stateConfig.defaultBetAmount;
+				stateBet.betAmount = stateBet.wageredBetAmount || stateConfig.defaultBetAmount;
 			}
 		},
 	);
