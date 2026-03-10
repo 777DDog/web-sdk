@@ -52,11 +52,11 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		gap: 24px;
+		gap: clamp(16px, 3vmin, 32px);
 	}
 
 	.team-logo {
-		width: 120px;
+		width: clamp(100px, 20vmin, 220px);
 		height: auto;
 		animation: breathe 2s ease-in-out infinite;
 		filter: drop-shadow(0 0 20px rgba(255, 180, 130, 0.3));
@@ -76,13 +76,13 @@
 
 	.loading-dots {
 		display: flex;
-		gap: 8px;
+		gap: clamp(6px, 1vmin, 12px);
 		align-items: center;
 	}
 
 	.dot {
-		width: 8px;
-		height: 8px;
+		width: clamp(6px, 1.2vmin, 12px);
+		height: clamp(6px, 1.2vmin, 12px);
 		border-radius: 50%;
 		background-color: rgba(255, 255, 255, 0.7);
 		animation: dotWave 1.4s ease-in-out infinite;
