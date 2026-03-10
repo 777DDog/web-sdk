@@ -41,7 +41,7 @@ const handleRequestBet = async ({ onError }: { onError: () => void }) => {
 
 const handleRequestEndRound = async () => {
 	if(stateUrlDerived.replay()) {
-		stateUi.replayCompleted = true;
+		// Replay mode: skip RGS call. replayCompleted is set in endGame.
 		return;
 	}
 
@@ -195,6 +195,11 @@ function createPrimaryMachines<TBet extends BaseBet>(options: Options<TBet>) {
 			if (targetBet) {
 				const betType = getBetType({ bet: targetBet });
 				await BET_TYPE_METHODS_MAP[betType].endGame();
+			}
+
+			// Replay: always show REPLAY AGAIN after all animations complete
+			if (stateUrlDerived.replay()) {
+				stateUi.replayCompleted = true;
 			}
 
 			// Resume 完成後恢復原本的下注金額
