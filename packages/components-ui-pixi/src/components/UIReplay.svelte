@@ -29,10 +29,15 @@
 	const props: Props = $props();
 	const context = getContext();
 
-	// Capture payoutMultiplier before state machine clears betToResume
+	// Capture betToResume and payoutMultiplier before state machine clears them
+	let savedBetToResume = $state<any>(null);
 	let capturedPayoutMultiplier = $state(0);
 	$effect(() => {
-		const pm = (stateBet.betToResume as any)?.payoutMultiplier;
+		const btr = stateBet.betToResume as any;
+		if (btr !== null && btr !== undefined) {
+			savedBetToResume = btr;
+		}
+		const pm = btr?.payoutMultiplier;
 		if (pm !== undefined && pm !== null) {
 			capturedPayoutMultiplier = pm;
 		}
@@ -108,7 +113,9 @@
 	};
 
 	const onReplay = () => {
-		window.location.reload();
+		stateBet.betToResume = savedBetToResume;
+		stateUi.replayStarted = false;
+		stateUi.replayCompleted = false;
 	};
 </script>
 
