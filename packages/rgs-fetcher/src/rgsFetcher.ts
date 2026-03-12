@@ -18,6 +18,7 @@ export const rgsFetcher = {
 
 		if (response.status !== 200) console.error('error', response);
 		const data = await response.json();
+		// console.log(`[RGS] POST ${options.url}`, data);
 		return data as TResponse;
 	},
 	get: async function get<
@@ -31,6 +32,7 @@ export const rgsFetcher = {
 
 		if (response.status !== 200) console.error('error', response);
 		const data = await response.json();
+		// console.log(`[RGS] GET ${options.url}`, data);
 		return data as TResponse;
 	},
 };
