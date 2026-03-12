@@ -1,9 +1,9 @@
 import { stateI18nDerived, stateUrlDerived } from 'state-shared';
 
 export const i18nDerived = {
-	bet: () => (stateUrlDerived.social() ? '' : ''),
+	bet: () => '',
+	betMenu: () => '',
 	max: () => stateI18nDerived.translate('MAX'),
-	betMenu: () => (stateUrlDerived.social() ? '' : ''),
 	selectYourBet: () => (stateUrlDerived.social() ? '' : stateI18nDerived.translate('SELECT')),
 	confirm: () => stateI18nDerived.translate('CONFIRM'),
 	masterVolume: () => stateI18nDerived.translate('MASTER VOLUME'),
