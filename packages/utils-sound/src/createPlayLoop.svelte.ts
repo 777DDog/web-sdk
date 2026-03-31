@@ -12,6 +12,7 @@ export function createPlayLoop<TSoundName extends string>(options: {
 
 	const playLoop = (sound: Sound) => {
 		const soundId = options.howl.play(sound.soundName);
+		options.howl.loop(true, soundId);
 		options.getSoundMap()[sound.soundName] = {
 			...sound,
 			soundId,
