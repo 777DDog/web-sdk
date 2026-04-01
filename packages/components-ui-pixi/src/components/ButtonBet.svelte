@@ -31,18 +31,17 @@
 								}
 							: {}}
 					/>
+					{@const isStop = key.startsWith('stop')}
 					<Text
 						anchor={0.5}
-						text={['spin_default', 'spin_disabled'].includes(key)
-							? i18nDerived.bet()
-							: i18nDerived.stop()}
+						text={isStop ? i18nDerived.stop() : i18nDerived.bet()}
 						style={{
 							align: 'center',
 							wordWrap: true,
 							wordWrapWidth: 200,
 							fontFamily: 'Source Sans 3',
 							fontWeight: '600',
-							fontSize: UI_BASE_FONT_SIZE * 0.9,
+							fontSize: UI_BASE_FONT_SIZE * (isStop ? 2.0 : 0.9),
 							fill: 0xffffff,
 						}}
 					/>
