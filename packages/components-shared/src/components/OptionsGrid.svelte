@@ -65,12 +65,12 @@
 		display: grid;
 		gap: 0.75rem;
 		place-content: center;
-		grid-template-columns: repeat(3, 1fr);
+		grid-template-columns: repeat(4, 1fr);
 	}
 
 	@media (max-height: 480px) {
 		.grid {
-			grid-template-columns: repeat(4, 1fr);
+			grid-template-columns: repeat(5, 1fr);
 		}
 	}
 

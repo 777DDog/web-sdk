@@ -14,6 +14,16 @@ const messagesMap = {
 	pt,
 	es,
 	de,
+	// Unsupported languages fall back to English
+	ar: en,
+	fr: en,
+	id: en,
+	pl: en,
+	ru: en,
+	tr: en,
+	vi: en,
+	fi: en,
+	hi: en,
 };
 
 export default messagesMap;

@@ -22,6 +22,7 @@
 
 	const loadMessages = (lang: Language) => {
 		const messages = props.messagesMap[lang];
+		if (!messages) throw new Error(`No messages found for locale "${lang}"`);
 		if (props.debug) console.log({ messages });
 		return messages;
 	};

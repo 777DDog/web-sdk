@@ -33,7 +33,8 @@
 		&.column {
 			flex-direction: column;
 			align-items: center;
-			max-height: 100%;
+			flex: 1;
+			min-height: 0;
 		}
 
 		&.row {
