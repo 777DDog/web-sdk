@@ -3,7 +3,7 @@
 
 	import { requestAuthenticate, requestReplay } from 'rgs-requests';
 	import { stateUrlDerived, stateBet, stateConfig, stateModal, stateUi } from 'state-shared';
-	import { API_AMOUNT_MULTIPLIER, MOST_USED_BET_INDEXES } from 'constants-shared/bet';
+	import { API_AMOUNT_MULTIPLIER } from 'constants-shared/bet';
 
 	type Props = { children: Snippet };
 
@@ -43,13 +43,7 @@
 				stateConfig.betAmountOptions = (authenticateData.config?.betLevels || []).map(
 					(level) => level / API_AMOUNT_MULTIPLIER,
 				);
-				stateConfig.betMenuOptions = stateConfig.betAmountOptions.filter((_, index) =>
-					MOST_USED_BET_INDEXES.includes(index),
-				);
-				console.log('[BUG3] RGS betLevels (raw):', authenticateData.config?.betLevels);
-				console.log('[BUG3] betAmountOptions (all):', stateConfig.betAmountOptions.map((v, i) => `[${i}]=${v}`));
-				console.log('[BUG3] MOST_USED_BET_INDEXES:', MOST_USED_BET_INDEXES);
-				console.log('[BUG3] betMenuOptions (filtered):', stateConfig.betMenuOptions);
+				stateConfig.betMenuOptions = stateConfig.betAmountOptions;
 
 				// Apply defaultBetLevel from RGS config
 				// console.log('[PATCH-C] defaultBetLevel logic START');

@@ -6,7 +6,6 @@
 	import BaseIcon from './BaseIcon.svelte';
 	import BaseTitle from './BaseTitle.svelte';
 	import BaseContent from './BaseContent.svelte';
-	import BaseScrollable from './BaseScrollable.svelte';
 	import BaseButtonWrap from './BaseButtonWrap.svelte';
 	import BaseButtonContent from './BaseButtonContent.svelte';
 	import BetMenuAmountToggle from './BetMenuAmountToggle.svelte';
@@ -24,24 +23,39 @@
 			<BaseTitle>
 				<span class="bet-menu-title">{i18nDerived.betMenu()}</span>
 			</BaseTitle>
-			<BaseScrollable type="column">
-				<span class="bet-menu-subtitle">{i18nDerived.selectYourBet()}</span>
-				<BetMenuAmountToggle />
+			<span class="bet-menu-subtitle">{i18nDerived.selectYourBet()}</span>
+			<BetMenuAmountToggle />
+			<div class="bet-grid-scroll">
 				<BetMenuAmountGrid />
-			</BaseScrollable>
-			<BaseButtonWrap type="full-width">
-				<Button data-test="confirm-button" onclick={confirm}>
-					<BaseIcon width="100%" height="3rem" />
-					<BaseButtonContent>
-						<span style="font-size: 1rem;">{i18nDerived.confirm()}</span>
-					</BaseButtonContent>
-				</Button>
-			</BaseButtonWrap>
+			</div>
+			<div class="bet-confirm-wrap">
+				<BaseButtonWrap type="full-width">
+					<Button data-test="confirm-button" onclick={confirm}>
+						<BaseIcon width="100%" height="3rem" />
+						<BaseButtonContent>
+							<span style="font-size: 1rem;">{i18nDerived.confirm()}</span>
+						</BaseButtonContent>
+					</Button>
+				</BaseButtonWrap>
+			</div>
 		</BaseContent>
 	</Popup>
 {/if}
 
 <style lang="scss">
+	.bet-grid-scroll {
+		flex: 1;
+		min-height: 0;
+		overflow-y: auto;
+		overscroll-behavior: contain;
+		width: 100%;
+	}
+
+	.bet-confirm-wrap {
+		flex-shrink: 0;
+		width: 100%;
+	}
+
 	@media (max-height: 500px) {
 		.bet-menu-title,
 		.bet-menu-subtitle {

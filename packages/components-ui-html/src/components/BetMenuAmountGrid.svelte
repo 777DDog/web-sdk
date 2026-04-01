@@ -1,21 +1,11 @@
 <script lang="ts">
 	import { OptionsGrid } from 'components-shared';
-	import { getContextLayout } from 'utils-layout';
 	import { stateBet, stateConfig } from 'state-shared';
 
 	import BaseIcon from './BaseIcon.svelte';
 	import BaseButtonContent from './BaseButtonContent.svelte';
 
-	const { stateLayoutDerived } = getContextLayout();
-	const count = $derived(stateLayoutDerived.layoutType() === 'landscape' ? 15 : 18);
-
-	const actualMax = $derived(stateConfig.betAmountOptions[stateConfig.betAmountOptions.length - 1]);
-	const options = $derived(
-		[
-			...stateConfig.betMenuOptions.slice(0, count - 1),
-			actualMax,
-		].filter((value, index, array) => array.indexOf(value) === index),
-	);
+	const options = $derived(stateConfig.betMenuOptions);
 
 	const formatValue = (value: number) => {
 		if (Math.abs(value) > 999999) {
