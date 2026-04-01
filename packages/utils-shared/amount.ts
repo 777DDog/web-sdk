@@ -29,18 +29,25 @@ export const bookEventAmountToNormalisedAmount = (bookEventAmount: number) => {
 
 export const numberToFloat = (value: number) => Number.parseFloat(`${value}`);
 
+// Strip invisible Unicode chars that i18n formatters may insert (NBSP, LTR/RTL marks, etc.)
+// and replace fullwidth ¥ (U+FFE5) with halfwidth ¥ (U+00A5) for BitmapFont compatibility.
+const sanitizeCurrencyString = (text: string): string =>
+	text
+		.replace(/\uFFE5/g, '¥')
+		.replace(/[\u00A0\u200B-\u200F\u2009\u202F\u2060\uFEFF]/g, '');
+
 export const numberToCurrencyString = (value: number) => {
 	if (stateBet.currency in NO_LOCALISATION_CURRENCY_MAP) {
 		return `${NO_LOCALISATION_CURRENCY_MAP[stateBet.currency]} ${numberToFloat(value).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 	}
 
-	return stateI18n.i18n.number(value, {
+	return sanitizeCurrencyString(stateI18n.i18n.number(value, {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2,
 		style: 'currency',
 		currency: stateBet.currency,
 		// numberingSystem: 'latn',
-	});
+	}));
 };
 
 export const bookEventAmountToCurrencyString = (bookEventAmount: number) => {
