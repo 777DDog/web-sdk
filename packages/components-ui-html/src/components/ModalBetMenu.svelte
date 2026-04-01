@@ -22,10 +22,10 @@
 	<Popup zIndex={zIndex.modal} onclose={() => (stateModal.modal = null)}>
 		<BaseContent maxWidth="100%">
 			<BaseTitle>
-				{i18nDerived.betMenu()}
+				<span class="bet-menu-title">{i18nDerived.betMenu()}</span>
 			</BaseTitle>
 			<BaseScrollable type="column">
-				<span>{i18nDerived.selectYourBet()}</span>
+				<span class="bet-menu-subtitle">{i18nDerived.selectYourBet()}</span>
 				<BetMenuAmountToggle />
 				<BetMenuAmountGrid />
 			</BaseScrollable>
@@ -40,3 +40,12 @@
 		</BaseContent>
 	</Popup>
 {/if}
+
+<style lang="scss">
+	@media (max-height: 500px) {
+		.bet-menu-title,
+		.bet-menu-subtitle {
+			display: none;
+		}
+	}
+</style>
