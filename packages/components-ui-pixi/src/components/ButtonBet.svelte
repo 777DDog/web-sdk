@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Container, Text } from 'pixi-svelte';
+	import { Container, Text, Graphics } from 'pixi-svelte';
 	import { Button, type ButtonProps } from 'components-pixi';
 	import { OnHotkey } from 'components-shared';
 	import { stateBetDerived } from 'state-shared';
@@ -31,20 +31,29 @@
 								}
 							: {}}
 					/>
-					{@const isStop = key.startsWith('stop')}
-					<Text
-						anchor={0.5}
-						text={isStop ? i18nDerived.stop() : i18nDerived.bet()}
-						style={{
-							align: 'center',
-							wordWrap: true,
-							wordWrapWidth: 200,
-							fontFamily: 'Source Sans 3',
-							fontWeight: '600',
-							fontSize: UI_BASE_FONT_SIZE * (isStop ? 2.0 : 0.9),
-							fill: 0xffffff,
-						}}
-					/>
+					{#if key.startsWith('stop')}
+						<Graphics
+							draw={(g) => {
+								const s = UI_BASE_FONT_SIZE * 0.8;
+								g.rect(-s, -s, s * 2, s * 2);
+								g.fill({ color: 0xffffff });
+							}}
+						/>
+					{:else}
+						<Text
+							anchor={0.5}
+							text={i18nDerived.bet()}
+							style={{
+								align: 'center',
+								wordWrap: true,
+								wordWrapWidth: 200,
+								fontFamily: 'Source Sans 3',
+								fontWeight: '600',
+								fontSize: UI_BASE_FONT_SIZE * 0.9,
+								fill: 0xffffff,
+							}}
+						/>
+					{/if}
 				</Container>
 			{/snippet}
 		</Button>
