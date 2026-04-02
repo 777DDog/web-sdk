@@ -1,9 +1,11 @@
 <script lang="ts" module>
-	import { stateBet, stateBetDerived } from 'state-shared';
+	import { stateBet, stateBetDerived, stateModal } from 'state-shared';
 </script>
 
 <script lang="ts">
 	import OnHotkey from './OnHotkey.svelte';
+
+	const disabled = $derived(stateModal.modal !== null);
 
 	const spaceHoldOn = () => {
 		stateBet.autoSpinsCounter = 0;
@@ -17,4 +19,4 @@
 	};
 </script>
 
-<OnHotkey hotkey="Space" onhold={spaceHoldOn} onholdend={spaceHoldOff} />
+<OnHotkey hotkey="Space" {disabled} onhold={spaceHoldOn} onholdend={spaceHoldOff} />
