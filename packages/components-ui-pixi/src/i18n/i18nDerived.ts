@@ -29,7 +29,7 @@ export const i18nDerived = {
 	// replay landing screen
 	replayTitle: () => stateUrlDerived.social() ? 'Play Replay' : 'Bet Replay',
 	replayMode: () => 'Mode',
-	replayTotalBetCost: () => stateUrlDerived.social() ? 'Total Play Cost' : 'Total Bet Cost',
+	replayTotalBetCost: () => stateUrlDerived.social() ? 'Total Play Amount' : 'Total Bet Cost',
 	replayTotalWin: () => 'Total Win',
 	replayStartButton: () => '\u25B6 Start Replay',
 	replayDisclaimer: () => stateUrlDerived.social()
