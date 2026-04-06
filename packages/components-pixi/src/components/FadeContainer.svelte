@@ -15,7 +15,20 @@
 	const alpha = new Tween(show ? 1 : 0, { duration: duration });
 
 	$effect(() => {
-		alpha.set(show ? 1 : 0, { duration: duration }).then(() => oncomplete?.());
+		let resolved = false;
+		alpha.set(show ? 1 : 0, { duration: duration }).then(() => {
+			if (!resolved) {
+				resolved = true;
+				oncomplete?.();
+			}
+		});
+
+		return () => {
+			if (!resolved) {
+				resolved = true;
+				oncomplete?.();
+			}
+		};
 	});
 
 	onMount(async () => {

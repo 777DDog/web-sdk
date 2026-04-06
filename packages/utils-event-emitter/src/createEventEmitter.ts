@@ -38,7 +38,7 @@ export function createEventEmitter<TEmitterEvent extends EmitterEventBase>() {
 		});
 	};
 
-	const BROADCAST_ASYNC_TIMEOUT_MS = 10_000; // 10s safety net for stuck subscribers
+	const BROADCAST_ASYNC_TIMEOUT_MS = 3_000; // 3s safety net for stuck subscribers
 
 	const broadcastAsync = (emitterEvent: TEmitterEvent) => {
 		console.log(`[broadcastAsync] START: ${emitterEvent.type}`);
