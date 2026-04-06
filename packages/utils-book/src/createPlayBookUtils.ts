@@ -18,7 +18,7 @@ export function createPlayBookUtils<TBookEventHandlerMap extends BookEventHandle
 	const playBookEvent = async (bookEvent: TBookEvent, bookEventContext: TBookEventContext) => {
 		const bookEventHandler = bookEventHandlerMap?.[bookEvent.type];
 		if (bookEventHandler) {
-			if (debug) console.log(bookEvent);
+			//if (debug) console.log(bookEvent);
 			await bookEventHandler(bookEvent, bookEventContext);
 		} else {
 			console.error('Missing bookEventHandler in "bookEventHandlerMap" for: ', bookEvent);

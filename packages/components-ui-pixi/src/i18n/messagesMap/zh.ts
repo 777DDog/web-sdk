@@ -1,7 +1,7 @@
 export default {
 	AUDIO: '音频',
 	BALANCE: '余额',
-	WIN: '赢',
+	WIN: '赢分',
 	BET: '投注',
 	STOP: '停止',
 	'BUY BONUS': '购买奖励',

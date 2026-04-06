@@ -14,9 +14,10 @@
 		"eslint-config-custom": "workspace:*"
 	},
 	"dependencies": {
-		"svelte": "5.20.5",
-		"vite": "6.2.0",
+		"@lingui/conf": "5.2.0",
+		"@lingui/vite-plugin": "5.2.0",
 		"@sveltejs/kit": "2.17.3",
-		"@lingui/vite-plugin": "5.2.0"
+		"svelte": "5.20.5",
+		"vite": "6.2.0"
 	}
 }
