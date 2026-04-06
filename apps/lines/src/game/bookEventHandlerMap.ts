@@ -95,8 +95,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		});
 		stateUi.freeSpinCounterTotal = bookEvent.totalFs;
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
-		await eventEmitter.broadcastAsync({ type: 'drawerButtonShow' });
+		eventEmitter.broadcast({ type: 'drawerButtonShow' });
 		eventEmitter.broadcast({ type: 'drawerFold' });
+		stateUi.drawerButtonShow = true;
+		stateUi.drawerFold = true;
 	},
 	updateFreeSpin: async (bookEvent: BookEventOfType<'updateFreeSpin'>) => {
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
@@ -129,8 +131,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		stateUi.freeSpinCounterShow = false;
 		await eventEmitter.broadcastAsync({ type: 'transition' });
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
-		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });
+		eventEmitter.broadcast({ type: 'drawerUnfold' });
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });
+		stateUi.drawerFold = false;
+		stateUi.drawerButtonShow = false;
 	},
 	setWin: async (bookEvent: BookEventOfType<'setWin'>) => {
 		const winLevelData = winLevelMap[bookEvent.winLevel as WinLevel];

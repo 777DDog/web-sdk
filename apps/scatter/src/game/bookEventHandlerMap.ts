@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import { recordBookEvent, checkIsMultipleRevealEvents, type BookEventHandlerMap } from 'utils-book';
-import { stateBet } from 'state-shared';
+import { stateBet, stateUi } from 'state-shared';
 
 import { eventEmitter } from './eventEmitter';
 import { playBookEvent } from './utils';
@@ -121,8 +121,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 			total: bookEvent.totalFs,
 		});
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
-		await eventEmitter.broadcastAsync({ type: 'drawerButtonShow' });
+		eventEmitter.broadcast({ type: 'drawerButtonShow' });
 		eventEmitter.broadcast({ type: 'drawerFold' });
+		stateUi.drawerButtonShow = true;
+		stateUi.drawerFold = true;
 	},
 	updateFreeSpin: async (bookEvent: BookEventOfType<'updateFreeSpin'>) => {
 		eventEmitter.broadcast({ type: 'freeSpinCounterShow' });
@@ -164,8 +166,10 @@ export const bookEventHandlerMap: BookEventHandlerMap<BookEvent, BookEventContex
 		eventEmitter.broadcast({ type: 'tumbleWinAmountHide' });
 		await eventEmitter.broadcastAsync({ type: 'transition' });
 		await eventEmitter.broadcastAsync({ type: 'uiShow' });
-		await eventEmitter.broadcastAsync({ type: 'drawerUnfold' });
+		eventEmitter.broadcast({ type: 'drawerUnfold' });
 		eventEmitter.broadcast({ type: 'drawerButtonHide' });
+		stateUi.drawerFold = false;
+		stateUi.drawerButtonShow = false;
 	},
 	boardMultiplierInfo: async (bookEvent: BookEventOfType<'boardMultiplierInfo'>) => {
 		eventEmitter.broadcast({ type: 'tumbleWinAmountShow' });
