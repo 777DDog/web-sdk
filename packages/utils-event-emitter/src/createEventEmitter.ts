@@ -42,6 +42,7 @@ export function createEventEmitter<TEmitterEvent extends EmitterEventBase>() {
 
 	const broadcastAsync = (emitterEvent: TEmitterEvent) => {
 		console.log(`[broadcastAsync] START: ${emitterEvent.type}`);
+		let timeoutId: ReturnType<typeof setTimeout>;
 		const getPromises = () =>
 			Array.from(subscriptions).map((handler, i) => {
 				const p = handler(emitterEvent);
@@ -49,12 +50,18 @@ export function createEventEmitter<TEmitterEvent extends EmitterEventBase>() {
 				return p;
 			});
 		const allP = Promise.all(getPromises());
-		allP.then(() => console.log(`[broadcastAsync] DONE: ${emitterEvent.type}`));
+		allP.then(() => {
+			clearTimeout(timeoutId);
+			console.log(`[broadcastAsync] DONE: ${emitterEvent.type}`);
+		});
 		return Promise.race([
 			allP,
-			new Promise((resolve) => setTimeout(resolve, BROADCAST_ASYNC_TIMEOUT_MS)).then(() =>
-				console.log(`[broadcastAsync] TIMEOUT: ${emitterEvent.type}`),
-			),
+			new Promise((resolve) => {
+				timeoutId = setTimeout(() => {
+					console.warn(`[broadcastAsync] ⚠️ TIMEOUT: ${emitterEvent.type}`);
+					resolve(undefined);
+				}, BROADCAST_ASYNC_TIMEOUT_MS);
+			}),
 		]);
 	};
 
