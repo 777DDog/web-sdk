@@ -41,26 +41,15 @@ export function createEventEmitter<TEmitterEvent extends EmitterEventBase>() {
 	const BROADCAST_ASYNC_TIMEOUT_MS = 3_000; // 3s safety net for stuck subscribers
 
 	const broadcastAsync = (emitterEvent: TEmitterEvent) => {
-		console.log(`[broadcastAsync] START: ${emitterEvent.type}`);
 		let timeoutId: ReturnType<typeof setTimeout>;
 		const getPromises = () =>
-			Array.from(subscriptions).map((handler, i) => {
-				const p = handler(emitterEvent);
-				if (p?.then) p.then(() => console.log(`[broadcastAsync] ${emitterEvent.type} subscriber ${i} resolved`));
-				return p;
-			});
+			Array.from(subscriptions).map((handler) => handler(emitterEvent));
 		const allP = Promise.all(getPromises());
-		allP.then(() => {
-			clearTimeout(timeoutId);
-			console.log(`[broadcastAsync] DONE: ${emitterEvent.type}`);
-		});
+		allP.then(() => clearTimeout(timeoutId));
 		return Promise.race([
 			allP,
 			new Promise((resolve) => {
-				timeoutId = setTimeout(() => {
-					console.warn(`[broadcastAsync] ⚠️ TIMEOUT: ${emitterEvent.type}`);
-					resolve(undefined);
-				}, BROADCAST_ASYNC_TIMEOUT_MS);
+				timeoutId = setTimeout(() => resolve(undefined), BROADCAST_ASYNC_TIMEOUT_MS);
 			}),
 		]);
 	};
