@@ -20,13 +20,6 @@
 	const { debug, key, anchor, children, scale: scaleProp, ...baseSpineProps }: Props = $props();
 	const context = getContextApp();
 	const spineData = $derived(context.stateApp.loadedAssets?.[key] as SPINE_PIXI.SkeletonData);
-	// DEBUG: SpineProvider lookup diagnostics
-	$effect(() => {
-		if (!spineData) {
-			const availableKeys = context.stateApp.loadedAssets ? Object.keys(context.stateApp.loadedAssets) : [];
-			console.warn(`[SpineProvider] key="${key}" → spineData is UNDEFINED. Available keys:`, availableKeys);
-		}
-	});
 
 	const SCALE_BASE = { x: 1, y: 1 };
 

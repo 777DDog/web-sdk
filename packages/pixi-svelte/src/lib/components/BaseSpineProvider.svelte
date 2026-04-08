@@ -16,10 +16,6 @@
 
 	const props: Props = $props();
 	const parentContext = getContextParent();
-	// Guard: skip render if spineData is undefined (graceful degradation)
-	if (!props.spineData) {
-		console.warn('[BaseSpineProvider] skipping render — spineData undefined');
-	}
 	const spine = props.spineData ? new SPINE_PIXI.Spine(props.spineData) : null;
 
 	if (spine) {

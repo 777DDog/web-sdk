@@ -5,18 +5,6 @@ const PROCESS_METHOD_MAP = {
 	spine: ({ key, rawAsset, src }: { key: string; rawAsset: RawSpine; src: SpineSrc }) => {
 		const atlasAsset = rawAsset[src.atlas] as SPINE_PIXI.TextureAtlas;
 		const skeletonAsset = rawAsset[src.skeleton] as Uint8Array;
-		// DEBUG: detailed spine processing diagnostics
-		console.log(`[assetLoad] key="${key}" atlasAsset:`, atlasAsset?.constructor?.name ?? 'UNDEFINED',
-			'skeletonAsset:', skeletonAsset?.constructor?.name ?? typeof skeletonAsset ?? 'UNDEFINED',
-			'isBinary:', skeletonAsset instanceof Uint8Array);
-		if (!atlasAsset) {
-			console.error(`[assetLoad] FAIL key="${key}": atlas is undefined. src.atlas=${src.atlas?.toString().split('/').pop()}`);
-			return { [key]: undefined };
-		}
-		if (!skeletonAsset) {
-			console.error(`[assetLoad] FAIL key="${key}": skeleton is undefined. src.skeleton=${src.skeleton?.toString().split('/').pop()}`);
-			return { [key]: undefined };
-		}
 		const attachmentLoader = new SPINE_PIXI.AtlasAttachmentLoader(atlasAsset);
 		const parser =
 			skeletonAsset instanceof Uint8Array
@@ -24,14 +12,9 @@ const PROCESS_METHOD_MAP = {
 				: new SPINE_PIXI.SkeletonJson(attachmentLoader);
 		const scale = src?.scale ?? 1;
 		parser.scale = scale;
-		try {
-			const skeletonData = parser.readSkeletonData(skeletonAsset);
-			console.log(`[assetLoad] OK key="${key}" bones:${skeletonData.bones?.length} anims:${skeletonData.animations?.length}`);
-			return { [key]: skeletonData };
-		} catch (err) {
-			console.error(`[assetLoad] readSkeletonData THREW for key="${key}":`, err);
-			return { [key]: undefined };
-		}
+		const skeletonData = parser.readSkeletonData(skeletonAsset);
+
+		return { [key]: skeletonData };
 	},
 	sprite: ({ key, rawAsset }: { key: string; rawAsset: RawSprites }) => ({ [key]: rawAsset }),
 	sprites: ({ rawAsset }: { rawAsset: RawSprites }) => rawAsset.textures,
