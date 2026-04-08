@@ -16,18 +16,19 @@
 
 	const props: Props = $props();
 	const parentContext = getContextParent();
-	// DEBUG: BaseSpineProvider creation diagnostics
+	// Guard: skip render if spineData is undefined (graceful degradation)
 	if (!props.spineData) {
-		console.error(`[BaseSpineProvider] spineData is undefined! Props:`, Object.keys(props));
-	} else {
-		console.log(`[BaseSpineProvider] creating Spine with data:`, props.spineData.name, `anims:`, props.spineData.animations?.map((a: any) => a.name));
+		console.warn('[BaseSpineProvider] skipping render — spineData undefined');
 	}
-	const spine = new SPINE_PIXI.Spine(props.spineData);
+	const spine = props.spineData ? new SPINE_PIXI.Spine(props.spineData) : null;
 
-	propsSyncEffect({ props, target: spine, ignore: ['children'] });
-
-	parentContext.addToParent(spine);
-	setContextSpine(spine);
+	if (spine) {
+		propsSyncEffect({ props, target: spine, ignore: ['children'] });
+		parentContext.addToParent(spine);
+		setContextSpine(spine);
+	}
 </script>
 
-{@render props.children()}
+{#if spine}
+	{@render props.children()}
+{/if}

@@ -70,7 +70,9 @@
 
 
 {#key spineData}
-	<BaseSpineProvider {...baseSpineProps} {scale} {pivot} {spineData}>
-		{@render children()}
-	</BaseSpineProvider>
+	{#if spineData}
+		<BaseSpineProvider {...baseSpineProps} {scale} {pivot} {spineData}>
+			{@render children()}
+		</BaseSpineProvider>
+	{/if}
 {/key}
