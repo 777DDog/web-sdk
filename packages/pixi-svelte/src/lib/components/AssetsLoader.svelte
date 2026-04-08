@@ -47,6 +47,14 @@
 					const loadSrc =
 						type === 'spine' ? Object.values(src).filter((item) => typeof item === 'string') : src;
 					const rawAsset = await PIXI.Assets.load<RawAsset>(loadSrc, onProgress);
+					// DEBUG: Spine asset loading diagnostics
+					if (type === 'spine') {
+						const rawKeys = rawAsset ? Object.keys(rawAsset) : [];
+						const rawTypes = rawKeys.map(k => `${k.split('/').pop()}: ${rawAsset[k]?.constructor?.name ?? typeof rawAsset[k]}`);
+						console.log(`[AssetsLoader] spine "${key}" rawAsset keys:`, rawTypes);
+						console.log(`[AssetsLoader] spine "${key}" src.atlas:`, (src as any).atlas?.split('/').pop());
+						console.log(`[AssetsLoader] spine "${key}" atlas value:`, rawAsset[(src as any).atlas]?.constructor?.name ?? 'UNDEFINED');
+					}
 					const processed = getProcessed({ key, rawAsset, type, src });
 					return processed;
 				} catch (error) {
