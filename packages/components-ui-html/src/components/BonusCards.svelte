@@ -27,6 +27,16 @@
 				</div>
 			{/snippet}
 
+			{#snippet image()}
+				{#if betModeData.assets.dialogImage}
+					<img
+						class="image"
+						src={betModeData.assets.dialogImage}
+						alt={betModeData.text.title}
+					/>
+				{/if}
+			{/snippet}
+
 			{#snippet description()}
 				{#if betModeData?.text?.description}
 					<div class="description">
@@ -69,6 +79,14 @@
 		font-size: 1rem;
 		line-height: 1rem;
 		text-align: center;
+	}
+
+	.image {
+		display: block;
+		margin: 0 auto;
+		max-width: 100%;
+		max-height: 6rem;
+		object-fit: contain;
 	}
 
 	.description {

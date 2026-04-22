@@ -3,6 +3,7 @@
 
 	type Props = {
 		title: Snippet;
+		image?: Snippet;
 		description: Snippet;
 		price: Snippet;
 		button: Snippet;
@@ -14,6 +15,7 @@
 <div class="bonus-card-wrap">
 	<div class="info">
 		{@render props.title()}
+		{#if props.image}{@render props.image()}{/if}
 		{@render props.description()}
 		{@render props.price()}
 	</div>
