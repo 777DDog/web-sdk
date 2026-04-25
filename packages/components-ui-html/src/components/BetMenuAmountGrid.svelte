@@ -8,15 +8,24 @@
 
 	const options = $derived(stateConfig.betMenuOptions);
 
+	// T90: shorthand (M/K) must keep ≥ 1 decimal so 0-decimal currencies
+	// (KRW/JPY) don't round 1.5M → "2M" via toFixed(0). Integer values
+	// drop the trailing .0 so $2M still reads as "2M". Sub-1K values keep
+	// the currency's native decimals (USD: 2, KRW: 0, etc).
+	const formatShort = (n: number) => {
+		if (Number.isInteger(n)) return `${n}`;
+		return n.toFixed(1);
+	};
 	const formatValue = (value: number) => {
 		const decimals = getCurrencyDecimals();
-		if (Math.abs(value) > 999999) {
-			return `${(Math.abs(value) / 1000000).toFixed(decimals)}M`;
+		const abs = Math.abs(value);
+		if (abs > 999999) {
+			return `${formatShort(abs / 1000000)}M`;
 		}
-		if (Math.abs(value) > 999) {
-			return `${(Math.abs(value) / 1000).toFixed(decimals)}K`;
+		if (abs > 999) {
+			return `${formatShort(abs / 1000)}K`;
 		}
-		return Math.abs(value).toFixed(decimals);
+		return abs.toFixed(decimals);
 	};
 </script>
 
