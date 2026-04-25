@@ -24,20 +24,15 @@ export const requestEndRound = async (options: {
 	sessionID: string;
 	rgsUrl: string;
 }) => {
-	const __payload = { sessionID: options.sessionID };
-	console.log('[T93] requestEndRound REQUEST', { url: '/wallet/end-round', payload: __payload });
-	try {
-		const data = await rgsFetcher.post({
-			rgsUrl: options.rgsUrl,
-			url: '/wallet/end-round',
-			variables: __payload,
-		});
-		console.log('[T93] requestEndRound RESPONSE OK', data);
-		return data;
-	} catch (e) {
-		console.log('[T93] requestEndRound ERROR', e);
-		throw e;
-	}
+	const data = await rgsFetcher.post({
+		rgsUrl: options.rgsUrl,
+		url: '/wallet/end-round',
+		variables: {
+			sessionID: options.sessionID,
+		},
+	});
+
+	return data;
 };
 
 export const requestEndEvent = async (options: {
@@ -64,31 +59,18 @@ export const requestBet = async (options: {
 	mode: string;
 	rgsUrl: string;
 }) => {
-	const __payload = {
-		mode: options.mode,
-		currency: options.currency,
-		sessionID: options.sessionID,
-		amount: options.amount * API_AMOUNT_MULTIPLIER,
-	};
-	console.log('[T93] requestBet REQUEST', {
+	const data = await rgsFetcher.post({
+		rgsUrl: options.rgsUrl,
 		url: '/wallet/play',
-		payload: __payload,
-		// raw amount before multiplier — useful for VND vs USD vs JPY comparison
-		rawAmount: options.amount,
-		API_AMOUNT_MULTIPLIER,
+		variables: {
+			mode: options.mode,
+			currency: options.currency,
+			sessionID: options.sessionID,
+			amount: options.amount * API_AMOUNT_MULTIPLIER,
+		},
 	});
-	try {
-		const data = await rgsFetcher.post({
-			rgsUrl: options.rgsUrl,
-			url: '/wallet/play',
-			variables: __payload,
-		});
-		console.log('[T93] requestBet RESPONSE OK', data);
-		return data;
-	} catch (e) {
-		console.log('[T93] requestBet ERROR', e);
-		throw e;
-	}
+
+	return data;
 };
 
 export const requestReplay = async (options: {
