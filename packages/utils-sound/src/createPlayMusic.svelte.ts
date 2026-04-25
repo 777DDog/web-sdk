@@ -51,6 +51,14 @@ export function createPlayMusic<TSoundName extends string>(options: {
 	const play = (playOptions: PlayOptions<TSoundName>) => {
 		const existingSound = options.getSoundMap()[playOptions.name];
 		const sound = existingSound ?? options.newSound(playOptions.name);
+		// forcePlay: callers who need the track to (re)start from the beginning —
+		// e.g. a celebration BGM that played once already and is now paused.
+		// Without forcePlay, soundState='paused' would resume mid-track.
+		if (playOptions.forcePlay && sound.soundState !== 'new') {
+			options.howl.stop(sound.soundId);
+			newMusic(options.newSound(playOptions.name));
+			return;
+		}
 		soundPlayMap[sound.soundState](sound);
 	};
 
