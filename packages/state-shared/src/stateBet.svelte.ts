@@ -1,5 +1,6 @@
 import type { BaseBet } from 'utils-bet';
 import { stateMeta } from './stateMeta.svelte';
+import { stateConfig } from './stateConfig.svelte';
 
 export type Currency = string;
 export type BetToResume = BaseBet | null;
@@ -21,13 +22,33 @@ export const stateBet = $state({
 	isTurbo: false,
 });
 
+// T96 (送審 issue #1): Snap requested bet to a legal RGS-provided level (and never
+// exceed balance/costMultiplier). Without this snap the player could be left holding
+// a non-roster amount (e.g. exact balance) which Stake server rejects on /wallet/play.
 const correctBetAmount = (value: number) => {
 	if (value <= 0) return 0;
 	const costMultiplier = betCostMultiplier();
 	if (costMultiplier === 0) return 0;
 	const max = stateBet.balanceAmount / costMultiplier;
-	if (value >= max) return max;
-	return value;
+	const options = stateConfig.betAmountOptions;
+	// Fallback: no RGS levels yet (pre-authenticate) — preserve legacy clamp.
+	if (!options || options.length === 0) {
+		if (value >= max) return max;
+		return value;
+	}
+	// Snap DOWN to the largest legal level that's ≤ requested value AND ≤ max.
+	const cap = Math.min(value, max);
+	let best = -1;
+	for (const opt of options) {
+		if (opt <= cap && opt > best) best = opt;
+	}
+	// No legal level fits inside balance — return smallest level so UI shows a
+	// valid option (caller is responsible for disabling SPIN via isBetCostAvailable).
+	if (best < 0) {
+		const sorted = [...options].sort((a, b) => a - b);
+		return sorted[0];
+	}
+	return best;
 };
 
 const setBetAmount = (value: number) => {
