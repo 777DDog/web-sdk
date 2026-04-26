@@ -1,12 +1,15 @@
 <script lang="ts">
 	import { OptionsGrid } from 'components-shared';
-	import { stateBet, stateConfig } from 'state-shared';
+	import { stateBet, stateBetDerived, stateConfig } from 'state-shared';
 	import { getCurrencyDecimals } from 'utils-shared/amount';
 
 	import BaseIcon from './BaseIcon.svelte';
 	import BaseButtonContent from './BaseButtonContent.svelte';
 
 	const options = $derived(stateConfig.betMenuOptions);
+	// T104 — affordability respects per-mode costMultiplier (Mythic 2× / Forge per-step etc).
+	// `level × costMultiplier ≤ balance` is the correct affordability test, not just `level ≤ balance`.
+	const costMultiplier = $derived(stateBetDerived.betCostMultiplier());
 
 	// T90: shorthand (M/K) must keep ≥ 1 decimal so 0-decimal currencies
 	// (KRW/JPY) don't round 1.5M → "2M" via toFixed(0). Integer values
@@ -32,8 +35,8 @@
 <OptionsGrid
 	value={stateBet.betAmount}
 	{options}
-	onchange={(value) => (stateBet.betAmount = value)}
-	isDisabled={(value) => value > stateBet.balanceAmount}
+	onchange={(value) => stateBetDerived.setBetAmount(value)}
+	isDisabled={(value) => value * costMultiplier > stateBet.balanceAmount}
 >
 	{#snippet option({ option })}
 		<BaseIcon

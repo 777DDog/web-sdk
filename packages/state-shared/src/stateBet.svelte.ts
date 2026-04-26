@@ -90,6 +90,7 @@ export const stateBetDerived = {
 	activeBetMode,
 	isContinuousBet,
 	timeScale,
+	betCostMultiplier,
 	betCost,
 	isBetCostAvailable,
 	hasAutoBetCounter,
