@@ -24,6 +24,7 @@ type ModalAutoSpin = {
 type ModalAutoSpinMessage = {
 	name: 'autoSpinMessage';
 	message: 'insufficientFunds' | 'lossLimitReached' | 'singleWinLimitReached';
+	fromAutoSpin?: boolean;
 };
 
 type ModalPayTable = {

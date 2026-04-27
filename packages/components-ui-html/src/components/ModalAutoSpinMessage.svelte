@@ -22,7 +22,9 @@
 				{i18nDerived.notification()}
 			</BaseTitle>
 			<BaseScrollable type="column">
-				<span class="text" data-test="auto-spin-stop-info">{i18nDerived.autoSpinsStopInfo()}</span>
+				{#if stateModal.modal.fromAutoSpin !== false}
+					<span class="text" data-test="auto-spin-stop-info">{i18nDerived.autoSpinsStopInfo()}</span>
+				{/if}
 				<div class="scrollY info-text" data-test="auto-spin-stop-content">
 					{messageMap[stateModal.modal.message]}
 				</div>
