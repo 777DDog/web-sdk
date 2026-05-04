@@ -1,8 +1,9 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import { Popup } from 'components-shared';
 	import { zIndex } from 'constants-shared/zIndex';
 	import { getContextLayout } from 'utils-layout';
-	import { stateModal, stateMetaDerived } from 'state-shared';
+	import { stateModal, stateMetaDerived, type BetModeData } from 'state-shared';
 
 	import BonusCards from './BonusCards.svelte';
 	import BetMenuAmountToggle from './BetMenuAmountToggle.svelte';
@@ -10,6 +11,16 @@
 	import BonusContentWrapPortrait from './BonusContentWrapPortrait.svelte';
 	import BonusContentWrapLandscape from './BonusContentWrapLandscape.svelte';
 
+	// VC09 Path B (2026-05-04) — optional pass-through Snippets so brand / game
+	// layers can decorate each card with a ribbon and / or override the cost
+	// display (e.g. Ante "+100% per play" vs BB "X× cost"). Backward-compat:
+	// omit both = original SDK behaviour.
+	type Props = {
+		ribbon?: Snippet<[BetModeData]>;
+		costLabel?: Snippet<[BetModeData]>;
+	};
+
+	const props: Props = $props();
 	const { stateLayoutDerived } = getContextLayout();
 
 	const activateList = $derived(
@@ -38,11 +49,11 @@
 			{/snippet}
 
 			{#snippet bonusCardsActivate()}
-				<BonusCards list={activateList} />
+				<BonusCards list={activateList} ribbon={props.ribbon} costLabel={props.costLabel} />
 			{/snippet}
 
 			{#snippet bonusCardsBuy()}
-				<BonusCards list={buyList} />
+				<BonusCards list={buyList} ribbon={props.ribbon} costLabel={props.costLabel} />
 			{/snippet}
 		</BonusContentWrap>
 	</Popup>

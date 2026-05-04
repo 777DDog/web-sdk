@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
+	import type { BetModeData } from 'state-shared';
 
 	import ModalError from './ModalError.svelte';
 	import ModalBetMenu from './ModalBetMenu.svelte';
@@ -15,6 +16,11 @@
 		version: Snippet;
 		payTableContent?: Snippet;
 		gameRulesContent?: Snippet;
+		// VC09 Path B (2026-05-04) — pass-through for buyBonus modal slots so the
+		// game / brand layer can decorate cards (ribbon banners, cost-label
+		// override). Backward-compat: omit = original SDK behaviour.
+		buyBonusRibbon?: Snippet<[BetModeData]>;
+		buyBonusCostLabel?: Snippet<[BetModeData]>;
 	};
 
 	const props: Props = $props();
@@ -22,7 +28,7 @@
 
 <ModalError />
 <ModalBetMenu />
-<ModalBuyBonus />
+<ModalBuyBonus ribbon={props.buyBonusRibbon} costLabel={props.buyBonusCostLabel} />
 <ModalBuyBonusConfirm />
 <ModalAutoSpin />
 <ModalAutoSpinMessage />
