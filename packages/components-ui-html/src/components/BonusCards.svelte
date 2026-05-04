@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import { stateBet, stateModal, type BetModeData } from 'state-shared';
 	import { Button } from 'components-shared';
 	import { getContextEventEmitter } from 'utils-event-emitter';
@@ -12,6 +13,17 @@
 
 	type Props = {
 		list: BetModeData[];
+		// VC09 Path B (2026-05-04) — optional per-card ribbon banner. Game-side
+		// passes a Snippet receiving betModeData; return null/undefined for cards
+		// that should not show a ribbon (e.g. Ante in VC09 uses runic-circle art
+		// and skips the ribbon). Backward-compat: omit prop = no ribbon, original
+		// SDK behaviour.
+		ribbon?: Snippet<[BetModeData]>;
+		// VC09 Path B — optional per-card cost label override. Lets per-play
+		// modifiers (Ante: "+100% Scatter rate per play") replace the default
+		// `betAmount × costMultiplier` currency display while one-shot purchase
+		// cards keep the default. Backward-compat: omit = SDK default.
+		costLabel?: Snippet<[BetModeData]>;
 	};
 
 	const props: Props = $props();
@@ -20,7 +32,10 @@
 
 {#each props.list as betModeData}
 	{#if betModeData.type !== 'default'}
-		<BonusCard>
+		{#snippet cardRibbon()}
+			{#if props.ribbon}{@render props.ribbon(betModeData)}{/if}
+		{/snippet}
+		<BonusCard ribbon={props.ribbon ? cardRibbon : undefined}>
 			{#snippet title()}
 				<div class="title">
 					{betModeData.text.title}
@@ -46,9 +61,13 @@
 			{/snippet}
 
 			{#snippet price()}
-				<div class="price">
-					{`${numberToCurrencyString(stateBet.betAmount * betModeData.costMultiplier)}`}
-				</div>
+				{#if props.costLabel}
+					{@render props.costLabel(betModeData)}
+				{:else}
+					<div class="price">
+						{`${numberToCurrencyString(stateBet.betAmount * betModeData.costMultiplier)}`}
+					</div>
+				{/if}
 			{/snippet}
 
 			{#snippet button()}
